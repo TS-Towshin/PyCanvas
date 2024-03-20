@@ -8,6 +8,9 @@ def main():
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("PyCanvas")
+    icon = pygame.image.load('images\\icon.png')
+    pygame.display.set_icon(icon)
+    
     canvas = Canvas(screen)
 
     clock = pygame.time.Clock()
