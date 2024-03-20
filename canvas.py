@@ -51,5 +51,5 @@ class Canvas:
         if mouse_buttons[2]:
             pygame.draw.circle(self.screen, self.bg_color, (x, y), self.eraser_size)
     
-    def clearScreen(self) -> None:
-        self.screen.fill(self.bg_color)
+    def clearScreen(self, screen) -> None:
+        screen.fill(self.bg_color)

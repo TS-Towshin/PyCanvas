@@ -35,7 +35,7 @@ def main():
         return buttons
 
     buttons = buttons()
-    menu_bar = False
+    menu_bar_open = True
 
     canvas.brush_size = brush_size_slider.calculateVal()
     canvas.eraser_size = eraser_size_slider.calculateVal()
@@ -55,13 +55,17 @@ def main():
                 if button.button_type == 'color':
                     canvas.brush_color = button.color
                 elif button.button_type == 'clear':
-                    canvas.clearScreen()
+                    canvas.clearScreen(screen)
 
     def open_menu():
         menu.skeleton(screen)
         brush_type_dropdown.draw(screen, mouse_x, mouse_y)
         brush_size_slider.drawSlider(screen)
+        brush_size_slider.hoverEffect(screen, mouse_x, mouse_y)
+
         eraser_size_slider.drawSlider(screen)
+        eraser_size_slider.hoverEffect(screen, mouse_x, mouse_y)
+
         renderButtons()
 
         if brush_size_slider.changed:
@@ -92,7 +96,7 @@ def main():
 
             canvas_state = screen.copy()
             
-            if not menu_bar:  
+            if not menu_bar_open:  
                 canvas.drawOnClick(mouse_buttons, mouse_x, mouse_y)
                 canvas.erase(mouse_buttons, mouse_x, mouse_y)
 
@@ -102,28 +106,30 @@ def main():
 
             if event.type == pygame.KEYDOWN:    # Reset the canvas when pressed R key
                 if event.key == pygame.K_r:
-                    canvas.clearScreen()
+                    canvas.clearScreen(screen)
 
                 if event.key == pygame.K_TAB:   # Open the menu when pressed TAB
 
-                    if not menu_bar:
+                    if not menu_bar_open:
                         screen_under_menu = screen.subsurface((0, 0, menu.width, menu.height)).copy()
                     
-                    menu_bar = not menu_bar
+                    menu_bar_open = not menu_bar_open
 
                     screen.blit(canvas_state, (0, 0))
                     screen.copy()
 
-                    if not menu_bar:
-                        screen.blit(screen_under_menu, (0, 0))
-
+                    if not menu_bar_open:
+                        try:
+                            screen.blit(screen_under_menu, (0, 0))
+                        except:
+                            screen.fill(canvas.bg_color, (0, 0, menu.width, menu.height))
                 if event.key == pygame.K_s and pygame.key.get_mods() & pygame.KMOD_CTRL:    # Save the image when pressed ctrl+s
                     pygame.image.save(screen, fileName("saved_images", 'png'))
 
-            if menu_bar:
+            if menu_bar_open:
                 menu_events()
                         
-        if menu_bar:
+        if menu_bar_open:
             open_menu()
 
         pygame.display.update()

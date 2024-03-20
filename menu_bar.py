@@ -27,8 +27,14 @@ class Dropdown:
 
     def draw(self, screen, mouse_x, mouse_y) -> None:
         pygame.draw.rect(screen, self.color, self.rect)
+        
+        # Hover effect for dropdown name
+        if self.rect.collidepoint(mouse_x, mouse_y):
+            pygame.draw.rect(screen, (150, 150, 150), self.rect)
+        
+        # Border for dropdown
         pygame.draw.rect(screen, 'black', self.rect, 1)
-    
+
         text = self.font.render(self.selected_option if self.selected_option else self.name, True, 'black')
         text_rect = text.get_rect(center=self.rect.center)
         screen.blit(text, text_rect)
@@ -36,9 +42,10 @@ class Dropdown:
         if self.is_open:
             for i, option in enumerate(self.options):
                 option_rect = pygame.Rect(self.rect.x, self.rect.y + self.rect.height * (i + 1), self.rect.width, self.rect.height)
-                
+
+                # Hover effect for options
                 if option_rect.collidepoint(mouse_x, mouse_y):
-                    pygame.draw.rect(screen, (47, 86, 200), option_rect)
+                    pygame.draw.rect(screen, (150, 150, 150), option_rect)
                 
                 else:
                     pygame.draw.rect(screen, self.color, option_rect)
@@ -78,7 +85,7 @@ class Slider:
         self.changed = True
 
     def drawSlider(self, screen) -> None:
-        slider_name = self.font.render(self.name, True, 'black', self.color)
+        slider_name = self.font.render(self.name, True, (255, 255, 255))
         screen.blit(slider_name, (self.x+10, self.y-30))
 
         pygame.draw.line(screen, 'white', (self.x, self.y), (self.end, self.y))
@@ -107,7 +114,11 @@ class Slider:
                     self.current_pos += dx
                     self.calculateVal()
                     self.changed = True
-    
+
+    def hoverEffect(self, screen, mouse_x, mouse_y):
+        if abs(self.current_pos-mouse_x) <= 7 and abs(self.y-mouse_y) <= 7:
+            pygame.draw.circle(screen, ('white'), (self.current_pos, self.y), 8)
+
 class Button:
     def __init__(self, color: str | tuple, x: int, y: int, width: int, height: int, button_type, text: str = None, border_color: str | tuple = (69, 69, 69)) -> None:
         self.x = x
